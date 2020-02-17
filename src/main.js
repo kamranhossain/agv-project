@@ -11,6 +11,15 @@ import VueApollo from 'vue-apollo';
 Vue.use(VueApollo);
 Vue.config.productionTip = false
 
+// Create a new HttpLink to connect to your GraphQL API.
+// According to the Apollo docs, this should be an absolute URI.
+const httpLink = new HttpLink({
+  uri: `https://somerandomgraphqlapi.com/api`
+});
+
+// I'm creating another variable here just because it makes it easier to add more links in the future.
+const link = httpLink;
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')
