@@ -30,6 +30,12 @@ const apolloClient = new ApolloClient({
   connectToDevTools: true,
 });
 
+const apolloProvider = new VueApollo({
+  // Apollo 2.0 allows multiple clients to be enabled at once.
+  // Here we select the default (and only) client.
+  defaultClient: apolloClient,
+});
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')
