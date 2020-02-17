@@ -1,5 +1,11 @@
 <template>
-  <p v-if="alligatorGraphQL">From GraphQL: {{alligatorGraphQL.name}}</p>
+  <p>
+    Alligator Name:
+    <input type="text" v-if="alligatorGraphQL"
+      :value="alligatorGraphQL.name" @input="temporaryName = $event.target.value"
+    />
+    <button @click="updateName">Update Name</button>
+  </p>
 </template>
 
 <script>
@@ -8,16 +14,13 @@ import gql from 'graphql-tag';
 export default {
   data() {
     return {
-      <span class="code-annotation">alligatorGraphQL: null</span>
+      temporaryName: '',
+      alligatorGraphQL: null
     }
   },
 
   apollo: {
-    // They key is the name of the data property
-    // on the component that you intend to populate.
     alligatorGraphQL: {
-      // Yes, this looks confusing.
-      // It's just normal GraphQL.
       query: gql`
         query alligatorQuery($input: String!) {
           getAlligator(uuid: $input) {
@@ -27,14 +30,28 @@ export default {
       `,
 
       variables: {
-        // Some random UUID I generated.
         input: `03e082be-5e10-4351-a968-5f28d3e50565`
       },
 
-      // Apollo maps results to the name of the query, for caching.
-      // So to update the right property on the componet, you need to
-      // select the property of the result with the name of the query.
       update: result => result.getAlligator,
+    }
+  },
+
+  methods: {
+    updateName() {
+      this.$apollo.mutate({
+        mutation: gql`
+          mutation ($name: String!) {
+            updateAlligatorName(name: $name)
+          }
+        `,
+        variables: { name: this.temporaryName }
+      }).then(mutationResult => {
+        // Do stuff with the result.
+        console.log(`The Alligator's updated name is: ${mutationResult.data.updateAlligatorName}`)
+      });
+
     }
   }
 }
+</script>
