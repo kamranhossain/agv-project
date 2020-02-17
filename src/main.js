@@ -6,6 +6,8 @@ import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import VueApollo from 'vue-apollo';
+// Add this to your Apollo imports.
+import { setContext } from 'apollo-link-context';
 
 // Register the VueApollo plugin with Vue.
 Vue.use(VueApollo);
@@ -17,8 +19,17 @@ const httpLink = new HttpLink({
   uri: `https://somerandomgraphqlapi.com/api`
 });
 
-// I'm creating another variable here just because it makes it easier to add more links in the future.
-const link = httpLink;
+// Create a new Middleware Link using setContext
+const middlewareLink = setContext(() => ({
+  headers: {
+    authorization: `Bearer ${HOWEVER_I_GET_MY_JWT}`
+  }
+}));
+
+// Change link assignment from
+// const link = httpLink;
+// to
+const link = middlewareLink.concat(httpLink);
 
 // Create the apollo client
 const apolloClient = new ApolloClient({
