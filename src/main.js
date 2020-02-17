@@ -20,6 +20,16 @@ const httpLink = new HttpLink({
 // I'm creating another variable here just because it makes it easier to add more links in the future.
 const link = httpLink;
 
+// Create the apollo client
+const apolloClient = new ApolloClient({
+  // Tells Apollo to use the link chain with the http link we set up.
+  link,
+  // Handles caching of results and mutations.
+  cache: new InMemoryCache(),
+  // Useful if you have the Apollo DevTools installed in your browser.
+  connectToDevTools: true,
+});
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')
